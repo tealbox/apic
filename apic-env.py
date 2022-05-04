@@ -21,12 +21,10 @@ def getScripter(url=None):
 ##    os.system(''' c:\\mytools\\python.exe -c "import os ; os.system('mkdir TiTi'); " ''')
     if url is None:
         url = "https://sourceforge.net/projects/pyscripter/files/PyScripter-v4.1/PyScripter-4.1.1-x64.zip/download"
-    pfile = "PyScripter-4.1.1-x64.zip"
+    pfile = "pyscripter.zip"
     os.chdir(path)
-    cmd = '''
-    c:\\mytools\\python.exe -c "import os ; from urllib import request; os.chdir("c:\\mytools"); urllib.request.urlretrieve({},{} ); "
-    '''.format(url,pfile)
-    os.system(cmd)
+   
+    os.system(''' c:\\mytools\\python.exe -c "import os ; from urllib import request ;  request.urlretrieve( 'https://sourceforge.net/projects/pyscripter/files/PyScripter-v4.1/PyScripter-4.1.1-x64.zip/download','pyscripter.zip'); " ''')
 ##    urllib.request.urlretrieve(url,pfile)
     zip_file = zipfile.ZipFile(pfile)
     zip_file.extractall()
