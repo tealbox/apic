@@ -1,6 +1,8 @@
 #-------------------------------------------------------------------------------
 # Name:        Apic-Env-Setup
 #-------------------------------------------------------------------------------
+## 
+## issue with SSL_V3, 
 
 import os, zipfile
 import urllib.request
@@ -16,13 +18,19 @@ def getPython(url=None):
     zip_file.extractall()
 
 def getScripter(url=None):
+##    os.system(''' c:\\mytools\\python.exe -c "import os ; os.system('mkdir TiTi'); " ''')
     if url is None:
         url = "https://sourceforge.net/projects/pyscripter/files/PyScripter-v4.1/PyScripter-4.1.1-x64.zip/download"
     pfile = "PyScripter-4.1.1-x64.zip"
     os.chdir(path)
-    urllib.request.urlretrieve(url,pfile)
+    cmd = '''
+    c:\\mytools\\python.exe -c "import os ; from urllib import request; os.chdir("c:\\mytools"); urllib.request.urlretrieve({},{} ); "
+    '''.format(url,pfile)
+    os.system(cmd)
+##    urllib.request.urlretrieve(url,pfile)
     zip_file = zipfile.ZipFile(pfile)
     zip_file.extractall()
+    
 
 ##https://efotinis.neocities.org/downloads/DeskPins-1.32-setup.exe
 
