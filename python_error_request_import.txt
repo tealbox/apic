@@ -1,0 +1,7 @@
+Error:
+from logging import NullHandler
+
+Resolution
+in the home directory of user logging.py file exist 
+import logging
+print(logging.__file__)
