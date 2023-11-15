@@ -5,3 +5,4 @@ Resolution
 in the home directory of user logging.py file exist 
 import logging
 print(logging.__file__)
+https://cXXXXins.zoom.us/j/95725568140?pwd=R3hJaW5Vd3B3ZFpnU2doeFgwQnozZz09
