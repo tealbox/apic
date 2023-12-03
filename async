@@ -1,0 +1,91 @@
+import time, requests
+import asyncio
+import aiohttp
+import requests
+import time
+import json
+from itertools import islice
+
+def chunked_iterable(iterable, chunk_size):
+    it = iter(iterable)
+    while True:
+        chunk = list(islice(it, chunk_size))
+        if not chunk:
+            break
+        yield chunk
+
+
+class timeit_context(object):
+    def __init__(self):
+        self.initial = None
+
+    def __enter__(self):
+        self.initial = time.time()
+        print(f"Start time: {self.initial}")
+        return 20
+
+    def __exit__(self, type_arg, value, traceback):
+        print(f'End Time  : {time.time()}')
+        print('Total time elapsed {} sec'.format(time.time() - self.initial))
+
+async def get_collection_attributes_async(base_url, nft_id_list):
+    attributes = [] # to store NFT data
+    max_workers = 250
+
+    tcp_connection = aiohttp.TCPConnector(limit=max_workers)
+    async with aiohttp.ClientSession(connector=tcp_connection) as session:
+        for nft_id_chunk in chunked_iterable(nft_id_list, max_workers):
+            results = await get_nft_attributes_of_chuck(base_url, nft_id_chunk, session)
+            attributes.extend(results)
+
+    await tcp_connection.close()
+    return attributes
+
+async def get_nft_attributes_of_chuck(base_url, nft_id_list, session):
+    tasks = []
+
+    for nft_id in nft_id_list:
+        url = f'{base_url}/{nft_id}'
+        task = asyncio.ensure_future(get_nft_attributes(url, session=session))
+        tasks.append(task)
+
+    return await asyncio.gather(*tasks, return_exceptions=True)
+
+async def get_nft_attributes(url, session):
+    timeout = 10
+    try:
+        async with session.get(url, timeout=timeout) as response:
+            result = await response.text()
+            return json.loads(result)
+    except Exception as e:
+        print(
+            f"Fetcha could not get the data for NFT. Error message: {e}. URL : {url}")
+        return {}
+
+async def t ():
+    token_base_url =  "https://api.coolcatsnft.com/cat"
+    nft_id_start = 0
+    nft_id_end = 2000
+    with timeit_context():
+        attributes = await get_collection_attributes_async(token_base_url, range(nft_id_start, nft_id_end))
+    print(attributes)
+
+asyncio.run(t())
+##
+##async def main():
+##   token_base_url =  "https://api.coolcatsnft.com/cat/"
+##   nft_id_start = 0
+##   nft_id_end = 20
+##   with timeit_context():
+##    attributes = await get_collection_attributes_async(token_base_url, range(nft_id_start, nft_id_end))
+####
+####    with timeit_context() as var:
+####        for i in range(1,100):
+####            time.sleep(.1)
+##    pass
+##    print(attributes)
+##
+##    pass
+##
+##if __name__ == '__main__':
+##    await main()
